@@ -1,0 +1,17 @@
+Evaluation {
+    width: 50%;
+}
+
+TextArea {
+    width: 50%;
+    border: none;
+    padding: 0;
+}
+
+Rule {
+}
+
+Coat {
+    padding: 5;
+    background: black;
+}
