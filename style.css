@@ -1,17 +1,20 @@
 Evaluation {
     width: 50%;
+    background: black 0%;
 }
 
 TextArea {
-    width: 50%;
+    width: 49%;
     border: none;
     padding: 0;
+    background: black 0%;
 }
 
 Rule {
+    background: black 0%;
 }
 
 Coat {
     padding: 5;
-    background: black;
+    background: black 0%;
 }
