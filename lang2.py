@@ -36,6 +36,25 @@ def assign(l, r):
     if l.strip():
         add_chip(to_re(l), lambda m: evaluate(r, [chip(*x, '') for x in m.groupdict().items()] + rules))
 
+# Actual mathematical functions
+import math
+import inspect
+for x in [x for x in dir(math) if x[0] != '_']:
+    if x in ['e']: continue
+    fn = getattr(math, x)
+    try:
+        if callable(fn):
+            #nargs = len(inspect.signature(fn).params)
+            args = inspect.signature(fn).parameters.keys()
+            css = ', '.join(map('<{}>'.format, args))
+            css2 = ', '.join(args)
+            register(x + '(' + css + ')')(eval(f'lambda {css2}, fn=fn: fn({css2})'))
+            #register(x + '(<<args>>)')(lambda args, fn=fn: fn(*map(float, args.split(','))))
+        else:
+            register(x)(lambda fn=fn: fn)
+    except:
+        print('no', x)
+
 @register('( <l> )')
 def paren(l): return l
 @register('<l> ^ <r>', color='\033[31m')
@@ -49,14 +68,12 @@ def add(l, r): return l + r
 @register('<l> - <r>', color='\033[33m')
 def add(l, r): return l - r
 
+
 def evaluate(s, rules, syntax=False):
     n = 1
     while n != 0:
         for c in rules:
             if syntax:
-                n = 0
-                #if not c.fn.macro:
-                    #s, n = re.subn(c.regex, lambda m, c=c.color: '<~' + b64.b32encode(f'{c}{m.group(1)}\033[0m'.encode()).decode() + '~>', s)
                 s, n = re.subn(c.regex, '@', s)
             else:
                 s, n = re.subn(c.regex, c.fn, s)
@@ -66,8 +83,3 @@ def evaluate(s, rules, syntax=False):
 
 def eval_drop_in(s, syntax=False):
     return evaluate(s, rules, syntax=syntax)
-
-if __name__ == '__main__':
-    print(evaluate('a = 1 + 1', rules, True))
-    print(evaluate('', rules, True))
-    print(evaluate('a', rules, True))
